@@ -1,13 +1,22 @@
 import pandas as pd
 
-data = [[1, '2019-02-17', '2019-02-28', 5], [1, '2019-03-01', '2019-03-22', 20], [2, '2019-02-01', '2019-02-20', 15], [2, '2019-02-21', '2019-03-31', 30]]
-prices = pd.DataFrame(data, columns=['product_id', 'start_date', 'end_date', 'price']).astype({'product_id':'Int64', 'start_date':'datetime64[ns]', 'end_date':'datetime64[ns]', 'price':'Int64'})
-data = [[1, '2019-02-25', 100], [1, '2019-03-01', 15], [2, '2019-02-10', 200], [2, '2019-03-22', 30]]
-units_sold = pd.DataFrame(data, columns=['product_id', 'purchase_date', 'units']).astype({'product_id':'Int64', 'purchase_date':'datetime64[ns]', 'units':'Int64'})
+data = [[121, 'US', 'approved', 1000, '2018-12-18'], [122, 'US', 'declined', 2000, '2018-12-19'], [123, 'US', 'approved', 2000, '2019-01-01'], [124, 'DE', 'approved', 2000, '2019-01-07']]
+transactions = pd.DataFrame(data, columns=['id', 'country', 'state', 'amount', 'trans_date']).astype({'id':'Int64', 'country':'object', 'state':'object', 'amount':'Int64', 'trans_date':'datetime64[ns]'})
 
-def average_selling_price(prices: pd.DataFrame, units_sold: pd.DataFrame) -> pd.DataFrame:
+def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
+    transactions.loc[transactions['state'] == 'approved', 'state_bool'] = 1
+    transactions.loc[transactions['state'] != 'approved', 'state_bool'] = 0
 
-    return 1
+    transactions.loc[transactions['state'] == 'approved', 'amount_bool'] = transactions['amount']
+    transactions.loc[transactions['state'] != 'approved', 'amount_bool'] = 0
+    transactions['trans_date'] = transactions['trans_date'].astype(str)
+    transactions['trans_date'] = transactions['trans_date'].str.slice(0, 7)
+    return transactions.groupby(['trans_date', 'country'], as_index=False).agg(
+        trans_count=('state', 'count'),
+        approved_count=('state_bool', 'sum'),
+        trans_total_amount=('amount', 'sum'),
+        approved_total_amount=('amount_bool', 'sum')
+    )
 
 
-print(average_selling_price(prices, units_sold))
+print(monthly_transactions(transactions))
