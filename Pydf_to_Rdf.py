@@ -20,7 +20,8 @@ def to_r_df(datasets):
         print(name)
 
 
-data = [[5, 'Alice', 250, 1], [4, 'Bob', 175, 5], [3, 'Alex', 350, 2], [6, 'John Cena', 400, 3], [1, 'Winston', 500, 6], [2, 'Marie', 200, 4]]
-queue = pd.DataFrame(data, columns=['person_id', 'person_name', 'weight', 'turn']).astype({'person_id':'Int64', 'person_name':'object', 'weight':'Int64', 'turn':'Int64'})
-datasets = [queue]
+data = [[1, 'Abbot'], [2, 'Doris'], [3, 'Emerson'], [4, 'Green'], [5, 'Jeames']]
+seat = pd.DataFrame(data, columns=['id', 'student']).astype({'id':'Int64', 'student':'object'})
+
+datasets = [seat]
 to_r_df(datasets)
